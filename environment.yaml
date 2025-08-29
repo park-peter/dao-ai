@@ -7,46 +7,77 @@ dependencies:
   - langchain-community==0.3.26
   - langchain-anthropic==0.3.18
   - langchain-openai==0.3.24
+  - langchain-mcp-adapters==0.1.9
+  - langchain-text-splitters==0.3.9
   - langgraph==0.6.5
   - langgraph-checkpoint==2.1.1
   - langgraph-checkpoint-postgres==2.0.23
   - langgraph-prebuilt==0.6.3
   - langgraph-supervisor==0.0.29
+  - langgraph-swarm==0.0.14
   - langmem==0.0.29
   - langsmith==0.4.1
+  
   # Databricks dependencies
   - databricks-agents==1.2.0
   - databricks-ai-bridge==0.5.1
   - databricks-langchain==0.5.1
   - databricks-sdk==0.61.0
-  - databricks-vectorsearch==0.56
+  - databricks-vectorsearch==0.57
   - unitycatalog-ai==0.3.1
   - unitycatalog-langchain==0.2.0
+  
   # MLflow and AI model dependencies
   - mlflow==3.1.1
   - anthropic==0.60.0
   - openai==1.90.0
   - tiktoken==0.9.0
+  
+  # Document processing and AI dependencies
+  - docling==2.48.0
+  - llama-index==0.13.3
+  - torch==2.8.0
+  - torchvision==0.23.0
+  - transformers==4.55.4
+  - accelerate==1.10.1
+  - huggingface-hub==0.34.4
+  - easyocr==1.7.2
+  
   # Data processing dependencies
-  - pandas==2.3.0
+  - pandas==2.2.3
   - numpy==1.26.4
   - pyarrow==20.0.0
+  - scipy==1.13.1
   - sqlparse==0.5.3
+  - openpyxl==3.1.5
+  - pypdf==6.0.0
   - pydantic==2.11.7
   - pydantic-settings==2.10.0
+  
   # Database dependencies
   - psycopg==3.2.9
   - psycopg-binary==3.2.9
   - psycopg-pool==3.2.6
   - sqlalchemy==2.0.41
+  
   # Web framework dependencies
   - fastapi==0.115.13
   - uvicorn==0.34.3
   - starlette==0.46.2
-  # Utilities
+  - mcp==1.9.4
+  
+  # Search and web tools
+  - duckduckgo-search==8.0.4
+  - requests==2.32.4
+  - httpx==0.28.1
+  
+  # Utilities and tools
   - loguru==0.7.3
   - python-dotenv==1.1.0
   - pyyaml==6.0.2
-  - requests==2.32.4
+  - rich==14.0.0
   - tenacity==9.1.2
   - typing-extensions==4.14.0
+  - nest-asyncio==1.6.0
+  - openevals==0.1.0
+  - grandalf==0.8

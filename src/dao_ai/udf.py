@@ -1,9 +1,10 @@
 import mimetypes
+import re
 import warnings
 from io import BytesIO
-import pandas as pd
 from typing import Iterator
 
+import pandas as pd
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
@@ -17,9 +18,6 @@ from docling.document_converter import (
 )
 from docling.pipeline.simple_pipeline import SimplePipeline
 from docling_core.types.doc.document import DoclingDocument
-from llama_index.core import Document, set_global_tokenizer
-from llama_index.core.node_parser import SentenceSplitter
-from transformers import AutoTokenizer
 
 pipeline_options: PdfPipelineOptions = PdfPipelineOptions()
 pipeline_options.do_ocr = False
@@ -72,19 +70,55 @@ def guess_mime_type(path: str) -> str:
 
 @F.pandas_udf("array<string>")
 def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
-    # set llama2 as tokenizer to match our model size (will stay below gte 1024 limit)
-    set_global_tokenizer(
-        AutoTokenizer.from_pretrained("hf-internal-testing/llama-tokenizer")
-    )
-    # Sentence splitter from llama_index to split on sentences
-    splitter = SentenceSplitter(chunk_size=500, chunk_overlap=10)
+    """
+    Simple text chunking using sentence boundaries and character limits.
+    Removes dependency on transformers and llama-index for Databricks compatibility.
+    """
 
-    def extract_and_split(b):
-        txt = parse_bytes(b)
-        if txt is None:
+    def simple_sentence_split(
+        text: str, max_chunk_size: int = 500, overlap: int = 10
+    ) -> list[str]:
+        """Split text into chunks based on sentence boundaries."""
+        if not text or not text.strip():
             return []
-        nodes = splitter.get_nodes_from_documents([Document(text=txt)])
-        return [n.text for n in nodes]
 
-    for x in batch_iter:
-        yield x.apply(extract_and_split)
+        # Split on sentence boundaries (., !, ?)
+        sentences = re.split(r"[.!?]+", text)
+        sentences = [s.strip() for s in sentences if s.strip()]
+
+        chunks = []
+        current_chunk = ""
+
+        for sentence in sentences:
+            # If adding this sentence would exceed max_chunk_size, start a new chunk
+            if (
+                current_chunk
+                and len(current_chunk) + len(sentence) + 1 > max_chunk_size
+            ):
+                chunks.append(current_chunk.strip())
+                # Start new chunk with overlap from previous chunk
+                words = current_chunk.split()
+                overlap_words = words[-overlap:] if len(words) > overlap else words
+                current_chunk = " ".join(overlap_words) + " " + sentence
+            else:
+                current_chunk = (current_chunk + " " + sentence).strip()
+
+        # Add the last chunk if it exists
+        if current_chunk.strip():
+            chunks.append(current_chunk.strip())
+
+        return chunks if chunks else [""]
+
+    def extract_and_split(doc_bytes: bytes) -> list[str]:
+        """Extract text and split into chunks."""
+        try:
+            txt = parse_bytes(doc_bytes)
+            if txt is None or not txt.strip():
+                return []
+            return simple_sentence_split(txt)
+        except Exception as e:
+            warnings.warn(f"Error processing document: {e}")
+            return []
+
+    for batch in batch_iter:
+        yield batch.apply(extract_and_split)

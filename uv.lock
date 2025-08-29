@@ -502,12 +502,6 @@ name = "dao-ai"
 version = "0.0.13"
 source = { editable = "." }
 dependencies = [
-    { name = "databricks-agents" },
-    { name = "databricks-langchain" },
-    { name = "databricks-sdk", extra = ["openai"] },
-    { name = "databricks-vectorsearch" },
-    { name = "docling" },
-    { name = "duckduckgo-search" },
     { name = "grandalf" },
     { name = "langchain" },
     { name = "langchain-mcp-adapters" },
@@ -517,32 +511,44 @@ dependencies = [
     { name = "langgraph-supervisor" },
     { name = "langgraph-swarm" },
     { name = "langmem" },
-    { name = "llama-index" },
     { name = "loguru" },
     { name = "mcp" },
-    { name = "mlflow" },
     { name = "nest-asyncio" },
-    { name = "openevals" },
-    { name = "openpyxl" },
     { name = "psycopg", extra = ["binary", "pool"] },
     { name = "pydantic" },
-    { name = "pypdf" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "rich" },
-    { name = "scipy" },
     { name = "sqlparse" },
     { name = "tiktoken" },
-    { name = "torch" },
-    { name = "transformers" },
-    { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 
 [package.optional-dependencies]
-databricks = [
+all = [
+    { name = "databricks-agents" },
     { name = "databricks-connect" },
+    { name = "databricks-langchain" },
+    { name = "databricks-sdk", extra = ["openai"] },
     { name = "databricks-vectorsearch" },
+    { name = "docling" },
+    { name = "llama-index" },
+    { name = "mlflow" },
+    { name = "openpyxl" },
+    { name = "pypdf" },
     { name = "pyspark" },
+    { name = "scipy" },
+    { name = "torch" },
+    { name = "unitycatalog-ai", extra = ["databricks"] },
+]
+databricks = [
+    { name = "databricks-agents" },
+    { name = "databricks-connect" },
+    { name = "databricks-langchain" },
+    { name = "databricks-sdk", extra = ["openai"] },
+    { name = "databricks-vectorsearch" },
+    { name = "mlflow" },
+    { name = "pyspark" },
+    { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 dev = [
     { name = "mypy" },
@@ -554,6 +560,14 @@ docs = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
+]
+documents = [
+    { name = "docling" },
+    { name = "llama-index" },
+    { name = "openpyxl" },
+    { name = "pypdf" },
+    { name = "scipy" },
+    { name = "torch" },
 ]
 test = [
     { name = "pytest" },
@@ -597,14 +611,18 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "databricks-agents", specifier = ">=1.2.0" },
+    { name = "databricks-agents", marker = "extra == 'all'", specifier = ">=1.2.0" },
+    { name = "databricks-agents", marker = "extra == 'databricks'", specifier = ">=1.2.0" },
+    { name = "databricks-connect", marker = "extra == 'all'", specifier = ">=15.0.0" },
     { name = "databricks-connect", marker = "extra == 'databricks'", specifier = ">=15.0.0" },
-    { name = "databricks-langchain", specifier = ">=0.4.2" },
-    { name = "databricks-sdk", extras = ["openai"], specifier = ">=0.55.0" },
-    { name = "databricks-vectorsearch", specifier = ">=0.56" },
+    { name = "databricks-langchain", marker = "extra == 'all'", specifier = ">=0.4.2" },
+    { name = "databricks-langchain", marker = "extra == 'databricks'", specifier = ">=0.4.2" },
+    { name = "databricks-sdk", extras = ["openai"], marker = "extra == 'all'", specifier = ">=0.55.0" },
+    { name = "databricks-sdk", extras = ["openai"], marker = "extra == 'databricks'", specifier = ">=0.55.0" },
+    { name = "databricks-vectorsearch", marker = "extra == 'all'", specifier = ">=0.56" },
     { name = "databricks-vectorsearch", marker = "extra == 'databricks'", specifier = ">=0.56" },
-    { name = "docling", specifier = ">=2.48.0" },
-    { name = "duckduckgo-search", specifier = ">=8.0.2" },
+    { name = "docling", marker = "extra == 'all'", specifier = ">=2.48.0" },
+    { name = "docling", marker = "extra == 'documents'", specifier = ">=2.48.0" },
     { name = "grandalf", specifier = ">=0.8" },
     { name = "langchain", specifier = ">=0.3.27" },
     { name = "langchain-mcp-adapters", specifier = ">=0.1.9" },
@@ -614,21 +632,25 @@ requires-dist = [
     { name = "langgraph-supervisor", specifier = ">=0.0.29" },
     { name = "langgraph-swarm", specifier = ">=0.0.14" },
     { name = "langmem", specifier = ">=0.0.29" },
-    { name = "llama-index", specifier = ">=0.13.3" },
+    { name = "llama-index", marker = "extra == 'all'", specifier = ">=0.13.3" },
+    { name = "llama-index", marker = "extra == 'documents'", specifier = ">=0.13.3" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "mcp", specifier = ">=1.9.1" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0.0" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
-    { name = "mlflow", specifier = ">=3.1.1" },
+    { name = "mlflow", marker = "extra == 'all'", specifier = ">=3.1.1" },
+    { name = "mlflow", marker = "extra == 'databricks'", specifier = ">=3.1.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "nest-asyncio", specifier = ">=1.6.0" },
-    { name = "openevals", specifier = ">=0.0.19" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "openpyxl", marker = "extra == 'all'", specifier = ">=3.1.5" },
+    { name = "openpyxl", marker = "extra == 'documents'", specifier = ">=3.1.5" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2.9" },
     { name = "pydantic", specifier = ">=2.11.3" },
-    { name = "pypdf", specifier = ">=6.0.0" },
+    { name = "pypdf", marker = "extra == 'all'", specifier = ">=6.0.0" },
+    { name = "pypdf", marker = "extra == 'documents'", specifier = ">=6.0.0" },
+    { name = "pyspark", marker = "extra == 'all'", specifier = ">=3.5.0" },
     { name = "pyspark", marker = "extra == 'databricks'", specifier = ">=3.5.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.3.5" },
@@ -638,14 +660,16 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "rich", specifier = ">=14.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11.11" },
-    { name = "scipy", specifier = "<=1.15" },
+    { name = "scipy", marker = "extra == 'all'", specifier = "<=1.15" },
+    { name = "scipy", marker = "extra == 'documents'", specifier = "<=1.15" },
     { name = "sqlparse", specifier = ">=0.5.3" },
     { name = "tiktoken", specifier = ">=0.9.0" },
-    { name = "torch", specifier = ">=2.8.0" },
-    { name = "transformers", specifier = ">=4.55.4" },
-    { name = "unitycatalog-ai", extras = ["databricks"], specifier = ">=0.3.0" },
+    { name = "torch", marker = "extra == 'all'", specifier = ">=2.8.0" },
+    { name = "torch", marker = "extra == 'documents'", specifier = ">=2.8.0" },
+    { name = "unitycatalog-ai", extras = ["databricks"], marker = "extra == 'all'", specifier = ">=0.3.0" },
+    { name = "unitycatalog-ai", extras = ["databricks"], marker = "extra == 'databricks'", specifier = ">=0.3.0" },
 ]
-provides-extras = ["dev", "docs", "test", "databricks"]
+provides-extras = ["dev", "docs", "test", "databricks", "documents", "all"]
 
 [package.metadata.requires-dev]
 all = [
@@ -1001,20 +1025,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/da/c204f1f342d453cf42b01bf0eb8cff92ed6266330381da9a7b56f582b5a4/docling_parse-4.2.3-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f55b4e9fce02db232acd1db5a6d8ebf363404936191ac3afb06ddb13308cd3a7", size = 15055945, upload-time = "2025-08-22T11:44:17.907Z" },
     { url = "https://files.pythonhosted.org/packages/93/de/bd94b5dfd1d99e936ae3ae439448632cb530807f62d973136c7833e065b0/docling_parse-4.2.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c380f88c5b06b1803246ad8fa22a6516f432d23cfbb62d1be3984ea3aca47035", size = 15129360, upload-time = "2025-08-22T11:44:19.96Z" },
     { url = "https://files.pythonhosted.org/packages/46/16/c9dec6af157a3b193d2103b25b939550514fc3d86d092b0c35907b2dd3c1/docling_parse-4.2.3-cp313-cp313-win_amd64.whl", hash = "sha256:c28f7ca885efb3a82f6303a05606b38b9bc6180fe16a6ed184bc7daf46812dcf", size = 16054143, upload-time = "2025-08-22T11:44:22.573Z" },
-]
-
-[[package]]
-name = "duckduckgo-search"
-version = "8.0.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "lxml" },
-    { name = "primp" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/ad/11f1b4e984f2230d3857914d6b496a6ec24c768f9f57e120b135c7ee8e4e/duckduckgo_search-8.0.4.tar.gz", hash = "sha256:02aee731d05056a6bbf217c51faddd0b9565c5ce1e94d0278cbd2fbcc0e41b95", size = 21843, upload-time = "2025-06-13T05:04:30.568Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/f0/1332de2dc7e7cbcabcf3993b3383dbce6b43d91cb3759fb53916be02845d/duckduckgo_search-8.0.4-py3-none-any.whl", hash = "sha256:22490e83c0ca885998d6623d8274f24934faffc43dac3c3482fe24ea4f6799bb", size = 18219, upload-time = "2025-06-13T05:04:29.052Z" },
 ]
 
 [[package]]
@@ -3085,22 +3095,6 @@ wheels = [
 ]
 
 [[package]]
-name = "openevals"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "langchain" },
-    { name = "langchain-openai" },
-    { name = "langsmith", version = "0.3.45", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
-    { name = "langsmith", version = "0.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
-    { name = "rich" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/3f/245f4e86e60b873ec93b71aaf219c9a6840a74d957e6d9f756ce3be64b9f/openevals-0.1.0.tar.gz", hash = "sha256:3dbb7cc4251ab7f6fcd5cbc8939b8538c5bf333e88ad01e5d8ac287f509891a4", size = 95378, upload-time = "2025-05-08T23:30:09.907Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5e/10/5a340aa03999f8e1e89b7bb7f34de27d195219f207a2e311e8f1655d1075/openevals-0.1.0-py3-none-any.whl", hash = "sha256:214b53197b1becff74279ea063c8752f8887a81afda700477639c19a0d683647", size = 62693, upload-time = "2025-05-08T23:30:08.22Z" },
-]
-
-[[package]]
 name = "openpyxl"
 version = "3.1.5"
 source = { registry = "https://pypi.org/simple" }
@@ -3348,22 +3342,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/08/39/679ca9b26c7bb2999ff122d50faa301e49af82ca9c066ec061cfbc0c6784/pre_commit-4.2.0.tar.gz", hash = "sha256:601283b9757afd87d40c4c4a9b2b5de9637a8ea02eaff7adc2d0fb4e04841146", size = 193424, upload-time = "2025-03-18T21:35:20.987Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/88/74/a88bf1b1efeae488a0c0b7bdf71429c313722d1fc0f377537fbe554e6180/pre_commit-4.2.0-py2.py3-none-any.whl", hash = "sha256:a009ca7205f1eb497d10b845e52c838a98b6cdd2102a6c8e4540e94ee75c58bd", size = 220707, upload-time = "2025-03-18T21:35:19.343Z" },
-]
-
-[[package]]
-name = "primp"
-version = "0.15.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/56/0b/a87556189da4de1fc6360ca1aa05e8335509633f836cdd06dd17f0743300/primp-0.15.0.tar.gz", hash = "sha256:1af8ea4b15f57571ff7fc5e282a82c5eb69bc695e19b8ddeeda324397965b30a", size = 113022, upload-time = "2025-04-17T11:41:05.315Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/5a/146ac964b99ea7657ad67eb66f770be6577dfe9200cb28f9a95baffd6c3f/primp-0.15.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:1b281f4ca41a0c6612d4c6e68b96e28acfe786d226a427cd944baa8d7acd644f", size = 3178914, upload-time = "2025-04-17T11:40:59.558Z" },
-    { url = "https://files.pythonhosted.org/packages/bc/8a/cc2321e32db3ce64d6e32950d5bcbea01861db97bfb20b5394affc45b387/primp-0.15.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:489cbab55cd793ceb8f90bb7423c6ea64ebb53208ffcf7a044138e3c66d77299", size = 2955079, upload-time = "2025-04-17T11:40:57.398Z" },
-    { url = "https://files.pythonhosted.org/packages/c3/7b/cbd5d999a07ff2a21465975d4eb477ae6f69765e8fe8c9087dab250180d8/primp-0.15.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c18b45c23f94016215f62d2334552224236217aaeb716871ce0e4dcfa08eb161", size = 3281018, upload-time = "2025-04-17T11:40:55.308Z" },
-    { url = "https://files.pythonhosted.org/packages/1b/6e/a6221c612e61303aec2bcac3f0a02e8b67aee8c0db7bdc174aeb8010f975/primp-0.15.0-cp38-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:e985a9cba2e3f96a323722e5440aa9eccaac3178e74b884778e926b5249df080", size = 3255229, upload-time = "2025-04-17T11:40:47.811Z" },
-    { url = "https://files.pythonhosted.org/packages/3b/54/bfeef5aca613dc660a69d0760a26c6b8747d8fdb5a7f20cb2cee53c9862f/primp-0.15.0-cp38-abi3-manylinux_2_34_armv7l.whl", hash = "sha256:6b84a6ffa083e34668ff0037221d399c24d939b5629cd38223af860de9e17a83", size = 3014522, upload-time = "2025-04-17T11:40:50.191Z" },
-    { url = "https://files.pythonhosted.org/packages/ac/96/84078e09f16a1dad208f2fe0f8a81be2cf36e024675b0f9eec0c2f6e2182/primp-0.15.0-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:592f6079646bdf5abbbfc3b0a28dac8de943f8907a250ce09398cda5eaebd260", size = 3418567, upload-time = "2025-04-17T11:41:01.595Z" },
-    { url = "https://files.pythonhosted.org/packages/6c/80/8a7a9587d3eb85be3d0b64319f2f690c90eb7953e3f73a9ddd9e46c8dc42/primp-0.15.0-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:5a728e5a05f37db6189eb413d22c78bd143fa59dd6a8a26dacd43332b3971fe8", size = 3606279, upload-time = "2025-04-17T11:41:03.61Z" },
-    { url = "https://files.pythonhosted.org/packages/0c/dd/f0183ed0145e58cf9d286c1b2c14f63ccee987a4ff79ac85acc31b5d86bd/primp-0.15.0-cp38-abi3-win_amd64.whl", hash = "sha256:aeb6bd20b06dfc92cfe4436939c18de88a58c640752cf7f30d9e4ae893cdec32", size = 3149967, upload-time = "2025-04-17T11:41:07.067Z" },
 ]
 
 [[package]]

@@ -401,14 +401,13 @@ class VolumePathModel(BaseModel, HasFullName):
             volume_name: str = self.volume.name
             return f"/Volumes/{catalog_name}/{schema_name}/{volume_name}/{self.path}"
         return self.path
-    
+
     def create(self, w: WorkspaceClient | None = None) -> None:
-        from dao_ai.providers.base import ServiceProvider
         from dao_ai.providers.databricks import DatabricksProvider
 
         if self.volume:
             self.volume.create(w=w)
-            
+
         provider: DatabricksProvider = DatabricksProvider(w=w)
         provider.create_path(self)
 

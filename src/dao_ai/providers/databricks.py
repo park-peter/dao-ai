@@ -542,7 +542,7 @@ class DatabricksProvider(ServiceProvider):
 
         if not vector_store.source_path:
             logger.info("Vector store source_path is not set.")
-            return 
+            return
 
         if not vector_store.checkpoint_path:
             logger.info("Vector store checkpoint_path is not set.")
