@@ -2547,6 +2547,36 @@
         "source_table": {
           "$ref": "#/$defs/TableModel"
         },
+        "source_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumeModel"
+            },
+            {
+              "$ref": "#/$defs/VolumePathModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Path"
+        },
+        "checkpoint_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumeModel"
+            },
+            {
+              "$ref": "#/$defs/VolumePathModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checkpoint Path"
+        },
         "primary_key": {
           "anyOf": [
             {
@@ -2626,7 +2656,15 @@
       "additionalProperties": false,
       "properties": {
         "volume": {
-          "$ref": "#/$defs/VolumeModel"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumeModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "path": {
           "title": "Path",
@@ -2634,7 +2672,6 @@
         }
       },
       "required": [
-        "volume",
         "path"
       ],
       "title": "VolumePathModel",

@@ -52,6 +52,18 @@ for _, vector_store in vector_stores.items():
   vector_store: VectorStoreModel
 
   print(f"vector_store: {vector_store}")
+  vector_store.parse_documents()
+
+# COMMAND ----------
+
+from dao_ai.config import VectorStoreModel
+
+vector_stores: dict[str, VectorStoreModel] = config.resources.vector_stores
+
+for _, vector_store in vector_stores.items():
+  vector_store: VectorStoreModel
+
+  print(f"vector_store: {vector_store}")
   vector_store.create()
 
 
