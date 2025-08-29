@@ -57,6 +57,7 @@ dependencies = [
     "grandalf>=0.8",
     "loguru>=0.7.3",
     "nest-asyncio>=1.6.0",
+    "numpy>=1.24.0,<2.0.0",
     "pydantic>=2.11.3",
     "python-dotenv>=1.1.0",
     "pyyaml>=6.0.2",
@@ -105,7 +106,6 @@ databricks = [
     "databricks-vectorsearch>=0.56",
     "databricks-connect>=15.0.0",
     "mlflow>=3.1.1",
-    "pyspark>=3.5.0",
     "unitycatalog-ai[databricks]>=0.3.0",
 ]
 
@@ -115,8 +115,9 @@ documents = [
     "llama-index>=0.13.3",
     "pypdf>=6.0.0",
     "openpyxl>=3.1.5",
-    "torch>=2.8.0",
-    "scipy<=1.15",
+    "torch>=2.8.0,<2.9.0",
+    "scipy>=1.10.0,<1.15.0",
+    "transformers>=4.40.0,<5.0.0",
 ]
 
 # Complete installation with all features
@@ -131,7 +132,6 @@ all = [
     "mlflow>=3.1.1",
     "openpyxl>=3.1.5",
     "pypdf>=6.0.0",
-    "pyspark>=3.5.0",
     "scipy<=1.15",
     "torch>=2.8.0",
     "unitycatalog-ai[databricks]>=0.3.0",
@@ -161,7 +161,6 @@ databricks = [
     "databricks-vectorsearch>=0.56",
     "databricks-connect>=15.0.0",
     "mlflow>=3.1.1",
-    "pyspark>=3.5.0",
     "unitycatalog-ai[databricks]>=0.3.0",
 ]
 documents = [
@@ -169,8 +168,9 @@ documents = [
     "llama-index>=0.13.3",
     "pypdf>=6.0.0",
     "openpyxl>=3.1.5",
-    "torch>=2.8.0",
-    "scipy<=1.15",
+    "torch>=2.8.0,<2.9.0",
+    "scipy>=1.10.0,<1.15.0",
+    "transformers>=4.40.0,<5.0.0",
 ]
 all = [
     { include-group = "databricks" },

@@ -535,7 +535,6 @@ all = [
     { name = "mlflow" },
     { name = "openpyxl" },
     { name = "pypdf" },
-    { name = "pyspark" },
     { name = "scipy" },
     { name = "torch" },
     { name = "unitycatalog-ai", extra = ["databricks"] },
@@ -547,7 +546,6 @@ databricks = [
     { name = "databricks-sdk", extra = ["openai"] },
     { name = "databricks-vectorsearch" },
     { name = "mlflow" },
-    { name = "pyspark" },
     { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 dev = [
@@ -577,20 +575,28 @@ test = [
 
 [package.dev-dependencies]
 all = [
-    { name = "mkdocs" },
-    { name = "mkdocs-material" },
-    { name = "mkdocstrings", extra = ["python"] },
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-mock" },
-    { name = "ruff" },
+    { name = "databricks-agents" },
+    { name = "databricks-connect" },
+    { name = "databricks-langchain" },
+    { name = "databricks-sdk", extra = ["openai"] },
+    { name = "databricks-vectorsearch" },
+    { name = "docling" },
+    { name = "llama-index" },
+    { name = "mlflow" },
+    { name = "openpyxl" },
+    { name = "pypdf" },
+    { name = "scipy" },
+    { name = "torch" },
+    { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 databricks = [
+    { name = "databricks-agents" },
     { name = "databricks-connect" },
+    { name = "databricks-langchain" },
+    { name = "databricks-sdk", extra = ["openai"] },
     { name = "databricks-vectorsearch" },
-    { name = "pyspark" },
+    { name = "mlflow" },
+    { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 dev = [
     { name = "mypy" },
@@ -602,6 +608,14 @@ docs = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
+]
+documents = [
+    { name = "docling" },
+    { name = "llama-index" },
+    { name = "openpyxl" },
+    { name = "pypdf" },
+    { name = "scipy" },
+    { name = "torch" },
 ]
 test = [
     { name = "pytest" },
@@ -650,8 +664,6 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11.3" },
     { name = "pypdf", marker = "extra == 'all'", specifier = ">=6.0.0" },
     { name = "pypdf", marker = "extra == 'documents'", specifier = ">=6.0.0" },
-    { name = "pyspark", marker = "extra == 'all'", specifier = ">=3.5.0" },
-    { name = "pyspark", marker = "extra == 'databricks'", specifier = ">=3.5.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.3.5" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=4.0.0" },
@@ -673,20 +685,28 @@ provides-extras = ["dev", "docs", "test", "databricks", "documents", "all"]
 
 [package.metadata.requires-dev]
 all = [
-    { name = "mkdocs", specifier = ">=1.5.0" },
-    { name = "mkdocs-material", specifier = ">=9.0.0" },
-    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
-    { name = "mypy", specifier = ">=1.0.0" },
-    { name = "pre-commit", specifier = ">=3.0.0" },
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "pytest-cov", specifier = ">=4.0.0" },
-    { name = "pytest-mock", specifier = ">=3.10.0" },
-    { name = "ruff", specifier = ">=0.11.11" },
+    { name = "databricks-agents", specifier = ">=1.2.0" },
+    { name = "databricks-connect", specifier = ">=15.0.0" },
+    { name = "databricks-langchain", specifier = ">=0.4.2" },
+    { name = "databricks-sdk", extras = ["openai"], specifier = ">=0.55.0" },
+    { name = "databricks-vectorsearch", specifier = ">=0.56" },
+    { name = "docling", specifier = ">=2.48.0" },
+    { name = "llama-index", specifier = ">=0.13.3" },
+    { name = "mlflow", specifier = ">=3.1.1" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pypdf", specifier = ">=6.0.0" },
+    { name = "scipy", specifier = "<=1.15" },
+    { name = "torch", specifier = ">=2.8.0" },
+    { name = "unitycatalog-ai", extras = ["databricks"], specifier = ">=0.3.0" },
 ]
 databricks = [
+    { name = "databricks-agents", specifier = ">=1.2.0" },
     { name = "databricks-connect", specifier = ">=15.0.0" },
+    { name = "databricks-langchain", specifier = ">=0.4.2" },
+    { name = "databricks-sdk", extras = ["openai"], specifier = ">=0.55.0" },
     { name = "databricks-vectorsearch", specifier = ">=0.56" },
-    { name = "pyspark", specifier = ">=3.5.0" },
+    { name = "mlflow", specifier = ">=3.1.1" },
+    { name = "unitycatalog-ai", extras = ["databricks"], specifier = ">=0.3.0" },
 ]
 dev = [
     { name = "mypy", specifier = ">=1.0.0" },
@@ -698,6 +718,14 @@ docs = [
     { name = "mkdocs", specifier = ">=1.5.0" },
     { name = "mkdocs-material", specifier = ">=9.0.0" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
+]
+documents = [
+    { name = "docling", specifier = ">=2.48.0" },
+    { name = "llama-index", specifier = ">=0.13.3" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pypdf", specifier = ">=6.0.0" },
+    { name = "scipy", specifier = "<=1.15" },
+    { name = "torch", specifier = ">=2.8.0" },
 ]
 test = [
     { name = "pytest", specifier = ">=8.3.5" },
@@ -3722,15 +3750,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/25/bd/56d9ec6b9f0fc4e0d95288759f3179f0fcd34b1a1526b75673d2f6d5196f/pypdfium2-4.30.0-py3-none-win_amd64.whl", hash = "sha256:90dbb2ac07be53219f56be09961eb95cf2473f834d01a42d901d13ccfad64b4c", size = 2892098, upload-time = "2024-05-09T18:33:13.107Z" },
     { url = "https://files.pythonhosted.org/packages/be/7a/097801205b991bc3115e8af1edb850d30aeaf0118520b016354cf5ccd3f6/pypdfium2-4.30.0-py3-none-win_arm64.whl", hash = "sha256:119b2969a6d6b1e8d55e99caaf05290294f2d0fe49c12a3f17102d01c441bd29", size = 2752118, upload-time = "2024-05-09T18:33:15.489Z" },
 ]
-
-[[package]]
-name = "pyspark"
-version = "3.5.6"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "py4j" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/62/36e50d38e5fe158e97cddec983b44f9417b1e205b02320e3c463b5f802fa/pyspark-3.5.6.tar.gz", hash = "sha256:f8b1c4360e41ab398c64904fae08740503bcb6bd389457d659fa6d9f2952cc48", size = 317359167, upload-time = "2025-05-27T08:24:20.82Z" }
 
 [[package]]
 name = "pytest"
