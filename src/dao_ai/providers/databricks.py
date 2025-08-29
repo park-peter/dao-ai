@@ -536,9 +536,8 @@ class DatabricksProvider(ServiceProvider):
         import pyspark.sql.functions as F
         import pyspark.sql.types as T
         from pyspark.sql import SparkSession
-        from pyspark.sql.functions import UserDefinedFunction
 
-        from dao_ai.udf import guess_mime_type, parse_bytes, read_as_chunk
+        from dao_ai.udf import get_guess_mime_type_udf, get_parse_bytes_udf, get_read_as_chunk_udf
 
         if not vector_store.source_path:
             logger.info("Vector store source_path is not set.")
@@ -585,14 +584,16 @@ class DatabricksProvider(ServiceProvider):
         )
 
         # Step 2: Detect mime type using UDF
-        df = df.withColumn("mime_type", guess_mime_type(df.path))
+        guess_mime_type_udf = get_guess_mime_type_udf()
+        df = df.withColumn("mime_type", guess_mime_type_udf(df.path))
 
         # Step 3: Parse document bytes to markdown using docling UDF
-        parse_bytes_udf: UserDefinedFunction = F.udf(parse_bytes, T.StringType())
+        parse_bytes_udf = get_parse_bytes_udf()
         df = df.withColumn("content", parse_bytes_udf(df.content))
 
         # Step 4: Chunk content using pandas UDF (compound-ai-langgraph pattern)
-        df = df.withColumn("chunks", F.explode(read_as_chunk(df.content)))
+        read_as_chunk_udf = get_read_as_chunk_udf()
+        df = df.withColumn("chunks", F.explode(read_as_chunk_udf(df.content)))
 
         # Step 5: Select final columns and rename path to document_uri
         df = df.selectExpr(

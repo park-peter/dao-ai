@@ -63,12 +63,20 @@ def parse_bytes(raw_doc_contents_bytes: bytes) -> str:
         return None
 
 
-@F.udf(T.StringType())
 def guess_mime_type(path: str) -> str:
     return mimetypes.guess_type(path)[0]
 
 
-@F.pandas_udf("array<string>")
+def get_guess_mime_type_udf():
+    """Create the guess_mime_type UDF when needed."""
+    return F.udf(guess_mime_type, T.StringType())
+
+
+def get_parse_bytes_udf():
+    """Create the parse_bytes UDF when needed."""
+    return F.udf(parse_bytes, T.StringType())
+
+
 def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
     """
     Simple text chunking using sentence boundaries and character limits.
@@ -122,3 +130,8 @@ def read_as_chunk(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
 
     for batch in batch_iter:
         yield batch.apply(extract_and_split)
+
+
+def get_read_as_chunk_udf():
+    """Create the read_as_chunk pandas UDF when needed."""
+    return F.pandas_udf(read_as_chunk, "array<string>")
