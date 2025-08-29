@@ -52,7 +52,6 @@ dependencies = [
     "langgraph-swarm>=0.0.14",
     "langmem>=0.0.29",
     "mcp>=1.9.1",
-    
     # Core utilities - always required
     "grandalf>=0.8",
     "loguru>=0.7.3",
@@ -64,9 +63,9 @@ dependencies = [
     "rich>=14.0.0",
     "sqlparse>=0.5.3",
     "tiktoken>=0.9.0",
-    
     # Database - required for core functionality
     "psycopg[binary,pool]>=3.2.9",
+    "databricks-sdk>=0.61.0",
 ]
 
 [project.scripts]
@@ -132,8 +131,9 @@ all = [
     "mlflow>=3.1.1",
     "openpyxl>=3.1.5",
     "pypdf>=6.0.0",
-    "scipy<=1.15",
-    "torch>=2.8.0",
+    "scipy>=1.10.0,<1.15.0",
+    "torch>=2.8.0,<2.9.0",
+    "transformers>=4.40.0,<5.0.0",
     "unitycatalog-ai[databricks]>=0.3.0",
 ]
 

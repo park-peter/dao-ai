@@ -391,7 +391,13 @@ class VolumeModel(BaseModel, HasFullName):
 class VolumePathModel(BaseModel, HasFullName):
     model_config = ConfigDict(use_enum_values=True, extra="forbid")
     volume: Optional[VolumeModel] = None
-    path: str
+    path: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_path_or_volume(self):
+        if not self.volume and not self.path:
+            raise ValueError("Either 'volume' or 'path' must be provided")
+        return self
 
     @property
     def full_name(self) -> str:
@@ -399,7 +405,8 @@ class VolumePathModel(BaseModel, HasFullName):
             catalog_name: str = self.volume.schema_model.catalog_name
             schema_name: str = self.volume.schema_model.schema_name
             volume_name: str = self.volume.name
-            return f"/Volumes/{catalog_name}/{schema_name}/{volume_name}/{self.path}"
+            path = f"/{self.path}" if self.path else ""
+            return f"/Volumes/{catalog_name}/{schema_name}/{volume_name}{path}"
         return self.path
 
     def create(self, w: WorkspaceClient | None = None) -> None:
@@ -418,8 +425,8 @@ class VectorStoreModel(BaseModel, IsDatabricksResource):
     index: Optional[IndexModel] = None
     endpoint: Optional[VectorSearchEndpoint] = None
     source_table: TableModel
-    source_path: Optional[VolumeModel | VolumePathModel] = None
-    checkpoint_path: Optional[VolumeModel | VolumePathModel] = None
+    source_path: Optional[VolumePathModel] = None
+    checkpoint_path: Optional[VolumePathModel] = None
     primary_key: Optional[str] = None
     columns: Optional[list[str]] = Field(default_factory=list)
     doc_uri: Optional[str] = None

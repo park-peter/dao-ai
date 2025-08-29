@@ -6,34 +6,55 @@ schemas:
     catalog_name: nfleming                    # Unity Catalog name
     schema_name: tru_green                    # Schema within the catalog
 
+  documents_schema: &documents_schema
+    catalog_name: nfleming                    # Unity Catalog name
+    schema_name: kellanova                    # Schema within the catalog
+
 resources:
+
   llms:
     default_llm: &default_llm
       name: databricks-meta-llama-3-3-70b-instruct  # Databricks serving endpoint name
 
+    embedding_model: &embedding_model
+      name: databricks-gte-large-en                 # Text embedding model
+
   vector_stores:
+
     documents_vector_store: &documents_vector_store
+      embedding_model: *embedding_model             # Reference to embedding model above
+      endpoint:                                     # Vector search endpoint configuration
+        name: dbdemos_vs_endpoint                   # Databricks vector search endpoint
+        type: STANDARD                              # Endpoint type (STANDARD or OPTIMIZED_STORAGE)
+      index:                                        # Vector search index configuration
+        schema: *tru_green_schema                      # Unity Catalog schema for the index
+        name: documents_index                       # Index name
       source_table:                                 # Table containing source data
-        schema: *tru_green_schema
-        name: documents
-      embedding_source_column: source               # Column to create embeddings from
+        volume: 
+          schema: *tru_green_schema
+          name: documents
       source_path:
         volume:
-          schema: *tru_green_schema
-          name: data
-        path: documents
+          schema: *documents_schema
+          name: databricks-pdfs
       checkpoint_path:
-        volume:
-          schema: *tru_green_schema
-          name: checkpoints
+        schema: *tru_green_schema
+        name: checkpoints
+      embedding_source_column: source               # Column to create embeddings from
+      primary_key: id                       # Primary key column
+      doc_uri: path                                  # Optional document URI column (null in this case)
+      columns:                                      # Columns to include in vector store
+        - source
+        - mime_type
+        - path
 
   genie_rooms:
     retail_genie_room: &retail_genie_room
       name: "Retail AI Genie Room"                  # Human-readable name
       space_id: 01f01c91f1f414d59daaefd2b7ec82ea    # Databricks Genie space ID
 
+
 retrievers:
-  # Product information retriever using vector search
   documents_retriever: &documents_retriever
     vector_store: *documents_vector_store            # Reference to vector store defined above
     columns:                                        # Columns to return in search results
@@ -86,11 +107,11 @@ agents:
       Answers all bar questions
 
 app:
-  name: genie_and_vector_search_example             # Application name  
+  name: tru_green             # Application name  
   log_level: INFO                                   # Logging level for the application
   registered_model:                                 # MLflow registered model configuration
     schema: *tru_green_schema                          # Schema where model will be registered
-    name: genie_and_vector_search_agent             # Model name in MLflow registry
+    name: tru_green_agent             # Model name in MLflow registry
   agents:                                           # List of agents included in the system
     - *genie_agent                                       # Order management agent
     - *vector_search_agent                               # Vector search agent
