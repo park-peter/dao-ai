@@ -1,7 +1,7 @@
 import mimetypes
 import warnings
 from io import BytesIO
-from turtle import pd
+import pandas as pd
 from typing import Iterator
 
 import pyspark.sql.functions as F
