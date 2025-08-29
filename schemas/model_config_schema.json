@@ -1,0 +1,2886 @@
+{
+  "$defs": {
+    "AgentModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/$defs/ToolModel"
+          },
+          "title": "Tools",
+          "type": "array"
+        },
+        "guardrails": {
+          "items": {
+            "$ref": "#/$defs/GuardrailModel"
+          },
+          "title": "Guardrails",
+          "type": "array"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt"
+        },
+        "handoff_prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Handoff Prompt"
+        },
+        "create_agent_hook": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Create Agent Hook"
+        },
+        "pre_agent_hook": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pre Agent Hook"
+        },
+        "post_agent_hook": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Post Agent Hook"
+        }
+      },
+      "required": [
+        "name",
+        "model"
+      ],
+      "title": "AgentModel",
+      "type": "object"
+    },
+    "AppModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "log_level": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LogLevel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "WARNING"
+        },
+        "registered_model": {
+          "$ref": "#/$defs/RegisteredModelModel"
+        },
+        "endpoint_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Name"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tags"
+        },
+        "scale_to_zero": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "title": "Scale To Zero"
+        },
+        "environment_vars": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Environment Vars"
+        },
+        "budget_policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Budget Policy Id"
+        },
+        "workload_size": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkloadSize"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Small"
+        },
+        "permissions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/AppPermissionModel"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Permissions"
+        },
+        "agents": {
+          "items": {
+            "$ref": "#/$defs/AgentModel"
+          },
+          "title": "Agents",
+          "type": "array"
+        },
+        "orchestration": {
+          "$ref": "#/$defs/OrchestrationModel"
+        },
+        "alias": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alias"
+        },
+        "initialization_hooks": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PythonFunctionModel"
+                  },
+                  {
+                    "$ref": "#/$defs/FactoryFunctionModel"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Initialization Hooks"
+        },
+        "shutdown_hooks": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PythonFunctionModel"
+                  },
+                  {
+                    "$ref": "#/$defs/FactoryFunctionModel"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Shutdown Hooks"
+        },
+        "message_hooks": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/PythonFunctionModel"
+                  },
+                  {
+                    "$ref": "#/$defs/FactoryFunctionModel"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Message Hooks"
+        },
+        "input_example": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChatPayload"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "chat_history": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChatHistoryModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "code_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Code Paths",
+          "type": "array"
+        },
+        "pip_requirements": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Pip Requirements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "registered_model",
+        "orchestration"
+      ],
+      "title": "AppModel",
+      "type": "object"
+    },
+    "AppPermissionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "principals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Principals",
+          "type": "array"
+        },
+        "entitlements": {
+          "items": {
+            "$ref": "#/$defs/Entitlement"
+          },
+          "title": "Entitlements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "entitlements"
+      ],
+      "title": "AppPermissionModel",
+      "type": "object"
+    },
+    "ChatHistoryModel": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "max_tokens": {
+          "default": 256,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "max_tokens_before_summary": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tokens Before Summary"
+        },
+        "max_messages_before_summary": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Messages Before Summary"
+        },
+        "max_summary_tokens": {
+          "default": 255,
+          "title": "Max Summary Tokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "ChatHistoryModel",
+      "type": "object"
+    },
+    "ChatPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/Message"
+          },
+          "title": "Messages",
+          "type": "array"
+        },
+        "custom_inputs": {
+          "additionalProperties": true,
+          "title": "Custom Inputs",
+          "type": "object"
+        }
+      },
+      "required": [
+        "messages",
+        "custom_inputs"
+      ],
+      "title": "ChatPayload",
+      "type": "object"
+    },
+    "CheckpointerModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StorageType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "memory"
+        },
+        "database": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatabaseModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CheckpointerModel",
+      "type": "object"
+    },
+    "CompositeVariableModel": {
+      "properties": {
+        "default_value": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Value"
+        },
+        "options": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EnvironmentVariableModel"
+              },
+              {
+                "$ref": "#/$defs/SecretVariableModel"
+              },
+              {
+                "$ref": "#/$defs/PrimitiveVariableModel"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "title": "CompositeVariableModel",
+      "type": "object"
+    },
+    "ConnectionModel": {
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ConnectionModel",
+      "type": "object"
+    },
+    "DatabaseModel": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "host": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Host"
+        },
+        "database": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "databricks_postgres",
+          "title": "Database"
+        },
+        "port": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 5432,
+          "title": "Port"
+        },
+        "connection_kwargs": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Connection Kwargs"
+        },
+        "max_pool_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 10,
+          "title": "Max Pool Size"
+        },
+        "timeout_seconds": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 5,
+          "title": "Timeout Seconds"
+        },
+        "user": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Password"
+        },
+        "client_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Id"
+        },
+        "client_secret": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Secret"
+        },
+        "workspace_host": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workspace Host"
+        }
+      },
+      "required": [
+        "name",
+        "host"
+      ],
+      "title": "DatabaseModel",
+      "type": "object"
+    },
+    "DatasetFormat": {
+      "enum": [
+        "csv",
+        "delta",
+        "json",
+        "parquet",
+        "orc",
+        "sql",
+        "excel"
+      ],
+      "title": "DatasetFormat",
+      "type": "string"
+    },
+    "DatasetModel": {
+      "additionalProperties": false,
+      "properties": {
+        "table": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TableModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ddl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/VolumeModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ddl"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/VolumePathModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatasetFormat"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "read_options": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Read Options"
+        },
+        "table_schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Table Schema"
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parameters"
+        }
+      },
+      "title": "DatasetModel",
+      "type": "object"
+    },
+    "Entitlement": {
+      "enum": [
+        "CAN_MANAGE",
+        "CAN_QUERY",
+        "CAN_VIEW",
+        "CAN_REVIEW",
+        "NO_PERMISSIONS"
+      ],
+      "title": "Entitlement",
+      "type": "string"
+    },
+    "EnvironmentVariableModel": {
+      "properties": {
+        "env": {
+          "title": "Env",
+          "type": "string"
+        },
+        "default_value": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Value"
+        }
+      },
+      "required": [
+        "env"
+      ],
+      "title": "EnvironmentVariableModel",
+      "type": "object"
+    },
+    "EvaluationModel": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "table": {
+          "$ref": "#/$defs/TableModel"
+        },
+        "num_evals": {
+          "title": "Num Evals",
+          "type": "integer"
+        },
+        "custom_inputs": {
+          "additionalProperties": true,
+          "title": "Custom Inputs",
+          "type": "object"
+        },
+        "guidelines": {
+          "items": {
+            "$ref": "#/$defs/GuidelineModel"
+          },
+          "title": "Guidelines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model",
+        "table",
+        "num_evals"
+      ],
+      "title": "EvaluationModel",
+      "type": "object"
+    },
+    "FactoryFunctionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "factory",
+          "default": "factory",
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "human_in_the_loop": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanInTheLoopModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "args": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Args"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FactoryFunctionModel",
+      "type": "object"
+    },
+    "FunctionModel": {
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionModel",
+      "type": "object"
+    },
+    "GenieRoomModel": {
+      "additionalProperties": false,
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "space_id": {
+          "title": "Space Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "space_id"
+      ],
+      "title": "GenieRoomModel",
+      "type": "object"
+    },
+    "GuardrailModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "type": "string"
+        },
+        "num_retries": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 3,
+          "title": "Num Retries"
+        }
+      },
+      "required": [
+        "name",
+        "model",
+        "prompt"
+      ],
+      "title": "GuardrailModel",
+      "type": "object"
+    },
+    "GuidelineModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "guidelines": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Guidelines",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "guidelines"
+      ],
+      "title": "GuidelineModel",
+      "type": "object"
+    },
+    "HumanInTheLoopModel": {
+      "additionalProperties": false,
+      "properties": {
+        "review_prompt": {
+          "default": "Please review the tool call",
+          "title": "Review Prompt",
+          "type": "string"
+        },
+        "interrupt_config": {
+          "additionalProperties": true,
+          "title": "Interrupt Config",
+          "type": "object"
+        },
+        "decline_message": {
+          "default": "Tool call declined by user",
+          "title": "Decline Message",
+          "type": "string"
+        },
+        "custom_actions": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Custom Actions"
+        }
+      },
+      "title": "HumanInTheLoopModel",
+      "type": "object"
+    },
+    "IndexModel": {
+      "additionalProperties": false,
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "IndexModel",
+      "type": "object"
+    },
+    "LLMModel": {
+      "additionalProperties": false,
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0.1,
+          "title": "Temperature"
+        },
+        "max_tokens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 8192,
+          "title": "Max Tokens"
+        },
+        "fallbacks": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/LLMModel"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fallbacks"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "LLMModel",
+      "type": "object"
+    },
+    "LogLevel": {
+      "enum": [
+        "TRACE",
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR"
+      ],
+      "title": "LogLevel",
+      "type": "string"
+    },
+    "McpFunctionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "mcp",
+          "default": "mcp",
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "human_in_the_loop": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanInTheLoopModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "transport": {
+          "$ref": "#/$defs/TransportType",
+          "default": "streamable_http"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "python",
+          "title": "Command"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "headers": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CompositeVariableModel"
+              },
+              {
+                "$ref": "#/$defs/EnvironmentVariableModel"
+              },
+              {
+                "$ref": "#/$defs/SecretVariableModel"
+              },
+              {
+                "$ref": "#/$defs/PrimitiveVariableModel"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Headers",
+          "type": "object"
+        },
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Args",
+          "type": "array"
+        },
+        "pat": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pat"
+        },
+        "client_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Id"
+        },
+        "client_secret": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Secret"
+        },
+        "workspace_host": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompositeVariableModel"
+            },
+            {
+              "$ref": "#/$defs/EnvironmentVariableModel"
+            },
+            {
+              "$ref": "#/$defs/SecretVariableModel"
+            },
+            {
+              "$ref": "#/$defs/PrimitiveVariableModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workspace Host"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "McpFunctionModel",
+      "type": "object"
+    },
+    "MemoryModel": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpointer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CheckpointerModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "store": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StoreModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "MemoryModel",
+      "type": "object"
+    },
+    "Message": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/MessageRole"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "MessageRole": {
+      "enum": [
+        "user",
+        "assistant",
+        "system"
+      ],
+      "title": "MessageRole",
+      "type": "string"
+    },
+    "OrchestrationModel": {
+      "additionalProperties": false,
+      "properties": {
+        "supervisor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupervisorModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "swarm": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SwarmModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "memory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MemoryModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "OrchestrationModel",
+      "type": "object"
+    },
+    "PermissionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "principals": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Principals",
+          "type": "array"
+        },
+        "privileges": {
+          "items": {
+            "$ref": "#/$defs/Privilege"
+          },
+          "title": "Privileges",
+          "type": "array"
+        }
+      },
+      "required": [
+        "privileges"
+      ],
+      "title": "PermissionModel",
+      "type": "object"
+    },
+    "PrimitiveVariableModel": {
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "PrimitiveVariableModel",
+      "type": "object"
+    },
+    "Privilege": {
+      "enum": [
+        "ALL_PRIVILEGES",
+        "USE_CATALOG",
+        "USE_SCHEMA",
+        "SELECT",
+        "INSERT",
+        "UPDATE",
+        "DELETE",
+        "MODIFY",
+        "CREATE",
+        "USAGE",
+        "CREATE_SCHEMA",
+        "CREATE_TABLE",
+        "CREATE_VIEW",
+        "CREATE_FUNCTION",
+        "CREATE_EXTERNAL_LOCATION",
+        "CREATE_STORAGE_CREDENTIAL",
+        "CREATE_MATERIALIZED_VIEW",
+        "CREATE_TEMPORARY_FUNCTION",
+        "EXECUTE",
+        "READ_FILES",
+        "WRITE_FILES"
+      ],
+      "title": "Privilege",
+      "type": "string"
+    },
+    "PythonFunctionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "python",
+          "default": "python",
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "human_in_the_loop": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanInTheLoopModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "PythonFunctionModel",
+      "type": "object"
+    },
+    "RegisteredModelModel": {
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "RegisteredModelModel",
+      "type": "object"
+    },
+    "ResourcesModel": {
+      "additionalProperties": false,
+      "properties": {
+        "llms": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LLMModel"
+          },
+          "title": "Llms",
+          "type": "object"
+        },
+        "vector_stores": {
+          "additionalProperties": {
+            "$ref": "#/$defs/VectorStoreModel"
+          },
+          "title": "Vector Stores",
+          "type": "object"
+        },
+        "genie_rooms": {
+          "additionalProperties": {
+            "$ref": "#/$defs/GenieRoomModel"
+          },
+          "title": "Genie Rooms",
+          "type": "object"
+        },
+        "tables": {
+          "additionalProperties": {
+            "$ref": "#/$defs/TableModel"
+          },
+          "title": "Tables",
+          "type": "object"
+        },
+        "volumes": {
+          "additionalProperties": {
+            "$ref": "#/$defs/VolumeModel"
+          },
+          "title": "Volumes",
+          "type": "object"
+        },
+        "functions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/FunctionModel"
+          },
+          "title": "Functions",
+          "type": "object"
+        },
+        "warehouses": {
+          "additionalProperties": {
+            "$ref": "#/$defs/WarehouseModel"
+          },
+          "title": "Warehouses",
+          "type": "object"
+        },
+        "databases": {
+          "additionalProperties": {
+            "$ref": "#/$defs/DatabaseModel"
+          },
+          "title": "Databases",
+          "type": "object"
+        },
+        "connections": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ConnectionModel"
+          },
+          "title": "Connections",
+          "type": "object"
+        }
+      },
+      "title": "ResourcesModel",
+      "type": "object"
+    },
+    "RetrieverModel": {
+      "additionalProperties": false,
+      "properties": {
+        "vector_store": {
+          "$ref": "#/$defs/VectorStoreModel"
+        },
+        "columns": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Columns"
+        },
+        "search_parameters": {
+          "$ref": "#/$defs/SearchParametersModel"
+        }
+      },
+      "required": [
+        "vector_store"
+      ],
+      "title": "RetrieverModel",
+      "type": "object"
+    },
+    "SchemaModel": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_name": {
+          "title": "Catalog Name",
+          "type": "string"
+        },
+        "schema_name": {
+          "title": "Schema Name",
+          "type": "string"
+        },
+        "permissions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/PermissionModel"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Permissions"
+        }
+      },
+      "required": [
+        "catalog_name",
+        "schema_name"
+      ],
+      "title": "SchemaModel",
+      "type": "object"
+    },
+    "SearchParametersModel": {
+      "additionalProperties": false,
+      "properties": {
+        "num_results": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 10,
+          "title": "Num Results"
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Filters"
+        },
+        "query_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "ANN",
+          "title": "Query Type"
+        }
+      },
+      "title": "SearchParametersModel",
+      "type": "object"
+    },
+    "SecretVariableModel": {
+      "properties": {
+        "scope": {
+          "title": "Scope",
+          "type": "string"
+        },
+        "secret": {
+          "title": "Secret",
+          "type": "string"
+        },
+        "default_value": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Value"
+        }
+      },
+      "required": [
+        "scope",
+        "secret"
+      ],
+      "title": "SecretVariableModel",
+      "type": "object"
+    },
+    "StorageType": {
+      "enum": [
+        "postgres",
+        "memory"
+      ],
+      "title": "StorageType",
+      "type": "string"
+    },
+    "StoreModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "embedding_model": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LLMModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StorageType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "memory"
+        },
+        "dims": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1536,
+          "title": "Dims"
+        },
+        "database": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DatabaseModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "StoreModel",
+      "type": "object"
+    },
+    "SupervisorModel": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "SupervisorModel",
+      "type": "object"
+    },
+    "SwarmModel": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/LLMModel"
+        },
+        "default_agent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AgentModel"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Agent"
+        },
+        "handoffs": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/AgentModel"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Handoffs"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "SwarmModel",
+      "type": "object"
+    },
+    "TableModel": {
+      "additionalProperties": false,
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "TableModel",
+      "type": "object"
+    },
+    "ToolModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "function": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PythonFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/FactoryFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/UnityCatalogFunctionModel"
+            },
+            {
+              "$ref": "#/$defs/McpFunctionModel"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Function"
+        }
+      },
+      "required": [
+        "name",
+        "function"
+      ],
+      "title": "ToolModel",
+      "type": "object"
+    },
+    "TransportType": {
+      "enum": [
+        "streamable_http",
+        "stdio"
+      ],
+      "title": "TransportType",
+      "type": "string"
+    },
+    "UnityCatalogFunctionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "unity_catalog",
+          "default": "unity_catalog",
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "human_in_the_loop": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanInTheLoopModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "UnityCatalogFunctionModel",
+      "type": "object"
+    },
+    "UnityCatalogFunctionSqlModel": {
+      "additionalProperties": false,
+      "properties": {
+        "function": {
+          "$ref": "#/$defs/UnityCatalogFunctionModel"
+        },
+        "ddl": {
+          "title": "Ddl",
+          "type": "string"
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parameters"
+        },
+        "test": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UnityCatalogFunctionSqlTestModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "function",
+        "ddl"
+      ],
+      "title": "UnityCatalogFunctionSqlModel",
+      "type": "object"
+    },
+    "UnityCatalogFunctionSqlTestModel": {
+      "additionalProperties": false,
+      "properties": {
+        "parameters": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parameters"
+        }
+      },
+      "title": "UnityCatalogFunctionSqlTestModel",
+      "type": "object"
+    },
+    "VectorSearchEndpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/VectorSearchEndpointType",
+          "default": "STANDARD"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "VectorSearchEndpoint",
+      "type": "object"
+    },
+    "VectorSearchEndpointType": {
+      "enum": [
+        "STANDARD",
+        "OPTIMIZED_STORAGE"
+      ],
+      "title": "VectorSearchEndpointType",
+      "type": "string"
+    },
+    "VectorStoreModel": {
+      "additionalProperties": false,
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "embedding_model": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LLMModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "index": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IndexModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VectorSearchEndpoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source_table": {
+          "$ref": "#/$defs/TableModel"
+        },
+        "source_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumePathModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "checkpoint_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumePathModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "primary_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Primary Key"
+        },
+        "columns": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Columns"
+        },
+        "doc_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Doc Uri"
+        },
+        "embedding_source_column": {
+          "title": "Embedding Source Column",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_table",
+        "embedding_source_column"
+      ],
+      "title": "VectorStoreModel",
+      "type": "object"
+    },
+    "VolumeModel": {
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SchemaModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "VolumeModel",
+      "type": "object"
+    },
+    "VolumePathModel": {
+      "additionalProperties": false,
+      "properties": {
+        "volume": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VolumeModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        }
+      },
+      "title": "VolumePathModel",
+      "type": "object"
+    },
+    "WarehouseModel": {
+      "properties": {
+        "on_behalf_of_user": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "On Behalf Of User"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "warehouse_id": {
+          "title": "Warehouse Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "warehouse_id"
+      ],
+      "title": "WarehouseModel",
+      "type": "object"
+    },
+    "WorkloadSize": {
+      "enum": [
+        "Small",
+        "Medium",
+        "Large"
+      ],
+      "title": "WorkloadSize",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "variables": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/CompositeVariableModel"
+          },
+          {
+            "$ref": "#/$defs/EnvironmentVariableModel"
+          },
+          {
+            "$ref": "#/$defs/SecretVariableModel"
+          },
+          {
+            "$ref": "#/$defs/PrimitiveVariableModel"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Variables",
+      "type": "object"
+    },
+    "schemas": {
+      "additionalProperties": {
+        "$ref": "#/$defs/SchemaModel"
+      },
+      "title": "Schemas",
+      "type": "object"
+    },
+    "resources": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResourcesModel"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "retrievers": {
+      "additionalProperties": {
+        "$ref": "#/$defs/RetrieverModel"
+      },
+      "title": "Retrievers",
+      "type": "object"
+    },
+    "tools": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ToolModel"
+      },
+      "title": "Tools",
+      "type": "object"
+    },
+    "guardrails": {
+      "additionalProperties": {
+        "$ref": "#/$defs/GuardrailModel"
+      },
+      "title": "Guardrails",
+      "type": "object"
+    },
+    "memory": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MemoryModel"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "agents": {
+      "additionalProperties": {
+        "$ref": "#/$defs/AgentModel"
+      },
+      "title": "Agents",
+      "type": "object"
+    },
+    "app": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AppModel"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evaluation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EvaluationModel"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "datasets": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/DatasetModel"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Datasets"
+    },
+    "unity_catalog_functions": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/UnityCatalogFunctionSqlModel"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Unity Catalog Functions"
+    },
+    "providers": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Providers"
+    }
+  },
+  "title": "AppConfig",
+  "type": "object"
+}

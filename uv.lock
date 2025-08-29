@@ -502,7 +502,9 @@ name = "dao-ai"
 version = "0.0.13"
 source = { editable = "." }
 dependencies = [
+    { name = "databricks-langchain" },
     { name = "databricks-sdk" },
+    { name = "databricks-vectorsearch" },
     { name = "grandalf" },
     { name = "langchain" },
     { name = "langchain-mcp-adapters" },
@@ -514,6 +516,7 @@ dependencies = [
     { name = "langmem" },
     { name = "loguru" },
     { name = "mcp" },
+    { name = "mlflow" },
     { name = "nest-asyncio" },
     { name = "numpy" },
     { name = "psycopg", extra = ["binary", "pool"] },
@@ -545,10 +548,6 @@ all = [
 databricks = [
     { name = "databricks-agents" },
     { name = "databricks-connect" },
-    { name = "databricks-langchain" },
-    { name = "databricks-sdk", extra = ["openai"] },
-    { name = "databricks-vectorsearch" },
-    { name = "mlflow" },
     { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 dev = [
@@ -581,12 +580,8 @@ test = [
 all = [
     { name = "databricks-agents" },
     { name = "databricks-connect" },
-    { name = "databricks-langchain" },
-    { name = "databricks-sdk", extra = ["openai"] },
-    { name = "databricks-vectorsearch" },
     { name = "docling" },
     { name = "llama-index" },
-    { name = "mlflow" },
     { name = "openpyxl" },
     { name = "pypdf" },
     { name = "scipy" },
@@ -597,10 +592,6 @@ all = [
 databricks = [
     { name = "databricks-agents" },
     { name = "databricks-connect" },
-    { name = "databricks-langchain" },
-    { name = "databricks-sdk", extra = ["openai"] },
-    { name = "databricks-vectorsearch" },
-    { name = "mlflow" },
     { name = "unitycatalog-ai", extra = ["databricks"] },
 ]
 dev = [
@@ -635,13 +626,12 @@ requires-dist = [
     { name = "databricks-agents", marker = "extra == 'databricks'", specifier = ">=1.2.0" },
     { name = "databricks-connect", marker = "extra == 'all'", specifier = ">=15.0.0" },
     { name = "databricks-connect", marker = "extra == 'databricks'", specifier = ">=15.0.0" },
+    { name = "databricks-langchain", specifier = ">=0.4.2" },
     { name = "databricks-langchain", marker = "extra == 'all'", specifier = ">=0.4.2" },
-    { name = "databricks-langchain", marker = "extra == 'databricks'", specifier = ">=0.4.2" },
     { name = "databricks-sdk", specifier = ">=0.61.0" },
     { name = "databricks-sdk", extras = ["openai"], marker = "extra == 'all'", specifier = ">=0.55.0" },
-    { name = "databricks-sdk", extras = ["openai"], marker = "extra == 'databricks'", specifier = ">=0.55.0" },
+    { name = "databricks-vectorsearch", specifier = ">=0.56" },
     { name = "databricks-vectorsearch", marker = "extra == 'all'", specifier = ">=0.56" },
-    { name = "databricks-vectorsearch", marker = "extra == 'databricks'", specifier = ">=0.56" },
     { name = "docling", marker = "extra == 'all'", specifier = ">=2.48.0" },
     { name = "docling", marker = "extra == 'documents'", specifier = ">=2.48.0" },
     { name = "grandalf", specifier = ">=0.8" },
@@ -660,8 +650,8 @@ requires-dist = [
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0.0" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
+    { name = "mlflow", specifier = ">=3.1.1" },
     { name = "mlflow", marker = "extra == 'all'", specifier = ">=3.1.1" },
-    { name = "mlflow", marker = "extra == 'databricks'", specifier = ">=3.1.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "nest-asyncio", specifier = ">=1.6.0" },
     { name = "numpy", specifier = ">=1.24.0,<2.0.0" },
@@ -697,12 +687,8 @@ provides-extras = ["dev", "docs", "test", "databricks", "documents", "all"]
 all = [
     { name = "databricks-agents", specifier = ">=1.2.0" },
     { name = "databricks-connect", specifier = ">=15.0.0" },
-    { name = "databricks-langchain", specifier = ">=0.4.2" },
-    { name = "databricks-sdk", extras = ["openai"], specifier = ">=0.55.0" },
-    { name = "databricks-vectorsearch", specifier = ">=0.56" },
     { name = "docling", specifier = ">=2.48.0" },
     { name = "llama-index", specifier = ">=0.13.3" },
-    { name = "mlflow", specifier = ">=3.1.1" },
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pypdf", specifier = ">=6.0.0" },
     { name = "scipy", specifier = ">=1.10.0,<1.15.0" },
@@ -713,10 +699,6 @@ all = [
 databricks = [
     { name = "databricks-agents", specifier = ">=1.2.0" },
     { name = "databricks-connect", specifier = ">=15.0.0" },
-    { name = "databricks-langchain", specifier = ">=0.4.2" },
-    { name = "databricks-sdk", extras = ["openai"], specifier = ">=0.55.0" },
-    { name = "databricks-vectorsearch", specifier = ">=0.56" },
-    { name = "mlflow", specifier = ">=3.1.1" },
     { name = "unitycatalog-ai", extras = ["databricks"], specifier = ">=0.3.0" },
 ]
 dev = [

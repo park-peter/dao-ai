@@ -30,7 +30,6 @@ resources:
         schema: *tru_green_schema                      # Unity Catalog schema for the index
         name: documents_index                       # Index name
       source_table:                                 # Table containing source data
-        volume: 
           schema: *tru_green_schema
           name: documents
       source_path:
@@ -38,8 +37,9 @@ resources:
           schema: *documents_schema
           name: databricks-pdfs
       checkpoint_path:
-        schema: *tru_green_schema
-        name: checkpoints
+        volume:
+          schema: *tru_green_schema
+          name: checkpoints
       embedding_source_column: source               # Column to create embeddings from
       primary_key: id                       # Primary key column
       doc_uri: path                                  # Optional document URI column (null in this case)
