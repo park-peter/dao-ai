@@ -65,6 +65,7 @@ flowchart TB
 | [`hardware_store.yaml`](./hardware_store.yaml) | 👔 Supervisor | Multi-agent supervisor with full features |
 | [`hardware_store_swarm.yaml`](./hardware_store_swarm.yaml) | 🐝 Swarm | Swarm orchestration with handoffs |
 | [`hardware_store_lakebase.yaml`](./hardware_store_lakebase.yaml) | 👔 Supervisor + 🧠 Lakebase | Supervisor with PostgreSQL memory persistence |
+| [`hardware_store_instructed.yaml`](./hardware_store_instructed.yaml) | 👔 Supervisor + 🎯 Instructed | Supervisor with instructed retrieval for natural language filtering |
 
 ## Hardware Store Supervisor Architecture
 
@@ -156,6 +157,47 @@ flowchart TB
 - **General** (blue, entry point): Can handoff to any agent
 - **DIY**: Can handoff to product, inventory, recommendation
 - **Inventory** (green): Terminal agent with no outbound handoffs
+
+## Instructed Retrieval Architecture
+
+For natural language product search with automatic filter extraction:
+
+```mermaid
+%%{init: {'theme': 'base'}}%%
+flowchart LR
+    subgraph Query["📝 User Query"]
+        Q["Milwaukee cordless drills,<br/>not the M12 line"]
+    end
+
+    subgraph Decomposition["🔀 Query Decomposition"]
+        D["Fast LLM<br/>━━━━━━━━━━━━━━━━<br/>Extract filters<br/>Generate subqueries"]
+    end
+
+    subgraph Search["🔍 Parallel Search"]
+        S1["brand:Milwaukee"]
+        S2["type:cordless drill"]
+        S3["NOT:M12"]
+    end
+
+    subgraph Merge["📊 Result Merging"]
+        RRF["Reciprocal Rank Fusion"]
+        FR["FlashRank Reranking"]
+    end
+
+    Q --> D
+    D --> S1 & S2 & S3
+    S1 & S2 & S3 --> RRF --> FR
+
+    style Decomposition fill:#fff3e0,stroke:#e65100
+    style Search fill:#e3f2fd,stroke:#1565c0
+    style Merge fill:#e8f5e9,stroke:#2e7d32
+```
+
+**Capabilities:**
+- Natural language product search with automatic filter extraction
+- Brand, category, and feature filtering from plain English
+- Query decomposition into parallel subqueries
+- Reciprocal Rank Fusion for result merging
 
 ## Feature Integration
 
@@ -303,6 +345,9 @@ dao-ai validate -c config/examples/15_complete_applications/hardware_store.yaml
 
 # Run in chat mode
 dao-ai chat -c config/examples/15_complete_applications/hardware_store.yaml
+
+# Run with instructed retrieval
+dao-ai chat -c config/examples/15_complete_applications/hardware_store_instructed.yaml
 
 # Visualize architecture
 dao-ai graph -c config/examples/15_complete_applications/hardware_store.yaml -o architecture.png
