@@ -1,6 +1,6 @@
 # 03. Reranking
 
-**Two-stage retrieval with semantic reranking**
+**Improve search result relevance with semantic and instruction-aware reranking**
 
 Improve search quality by reranking initial results using a cross-encoder or LLM-based reranker.
 
@@ -39,9 +39,11 @@ flowchart TB
 
 ## Examples
 
-| File | Description |
-|------|-------------|
-| [`reranking_basic.yaml`](./reranking_basic.yaml) | Two-stage retrieval with cross-encoder reranking |
+| File | Description | Use Case |
+|------|-------------|----------|
+| [`reranking_basic.yaml`](./reranking_basic.yaml) | Two-stage retrieval with cross-encoder reranking | General semantic reranking demo |
+| [`vector_search_with_reranking.yaml`](./vector_search_with_reranking.yaml) | Vector search + FlashRank reranking | High-quality semantic search with minimal latency |
+| [`instruction_aware_reranking.yaml`](./instruction_aware_reranking.yaml) | FlashRank + LLM instruction-aware reranking | Constraint-aware reranking for price/brand/category |
 
 ## Why Reranking?
 
@@ -211,6 +213,58 @@ dao-ai chat -c config/examples/03_reranking/reranking_basic.yaml
 > Search for cordless drills
 # Notice: Results are more relevant to intent
 ```
+
+## Instruction-Aware Reranking
+
+For queries with explicit constraints (price, brand, category), add an LLM stage after the cross-encoder:
+
+```mermaid
+%%{init: {'theme': 'base'}}%%
+flowchart LR
+    subgraph Pipeline["🔄 Instruction-Aware Pipeline"]
+        Q["Query"]
+        VS["Vector Search<br/>(top 50)"]
+        FR["FlashRank<br/>(top 20)"]
+        LLM["LLM Rerank<br/>(top 10)"]
+        R["Results"]
+    end
+
+    Q --> VS --> FR --> LLM --> R
+
+    style VS fill:#e3f2fd,stroke:#1565c0
+    style FR fill:#e8f5e9,stroke:#2e7d32
+    style LLM fill:#fff3e0,stroke:#e65100
+```
+
+### Configuration
+
+```yaml
+rerank:
+  model: ms-marco-MiniLM-L-12-v2
+  top_n: 20                          # FlashRank selects 20 candidates
+  instruction_aware:
+    enabled: true
+    model: *fast_llm                 # Use a small LLM for speed
+    instructions: |
+      Prioritize results matching price and brand constraints.
+    top_n: 10                        # Final count after LLM rerank
+```
+
+### When to Use
+
+- Queries with price constraints ("under $100")
+- Brand preferences ("Milwaukee", "not DeWalt")
+- Category requirements ("power tools")
+- When cross-encoder alone misses nuanced user intent
+
+### Latency Comparison
+
+| Configuration | Latency | Use Case |
+|---------------|---------|----------|
+| Cross-encoder only | ~110ms | General queries |
+| Cross-encoder + Instruction-Aware | ~210ms | Constrained queries |
+
+**Performance tip:** Use fast LLMs (GPT-3.5-Turbo, Claude 3 Haiku, Llama 3 8B) for the instruction-aware stage.
 
 ## Best Practices
 
