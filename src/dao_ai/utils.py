@@ -399,11 +399,60 @@ def _inline_schema_defs(schema: dict[str, Any]) -> dict[str, Any]:
     return resolve_refs(schema)
 
 
+def _extract_first_json_object(content: str) -> str | None:
+    """Extract the first complete JSON object from content using balanced brace matching.
+
+    Small models (e.g., Llama 3 8B) may output multiple JSON objects interleaved
+    with conversational text. This finds the first balanced JSON object.
+
+    Args:
+        content: String potentially containing JSON object(s) mixed with text
+
+    Returns:
+        The first complete JSON object string, or None if not found
+    """
+    start = content.find("{")
+    if start == -1:
+        return None
+
+    depth = 0
+    in_string = False
+    escape_next = False
+
+    for i in range(start, len(content)):
+        char = content[i]
+
+        if escape_next:
+            escape_next = False
+            continue
+
+        if char == "\\":
+            escape_next = True
+            continue
+
+        if char == '"' and not escape_next:
+            in_string = not in_string
+            continue
+
+        if in_string:
+            continue
+
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return content[start : i + 1]
+
+    return None
+
+
 def _repair_json(content: str) -> str | None:
     """Attempt to repair malformed JSON from LLM output.
 
     Handles common issues:
     - Extra text before/after JSON object
+    - Multiple JSON objects interleaved with text (extracts first complete one)
     - Truncated JSON (unclosed brackets/braces)
     - Trailing commas
 
@@ -413,14 +462,30 @@ def _repair_json(content: str) -> str | None:
     Returns:
         Repaired JSON string if successful, None otherwise
     """
-    # 1. Extract JSON object if wrapped in extra text
-    start = content.find("{")
-    end = content.rfind("}")
-    if start == -1 or end == -1 or start >= end:
-        return None
-    content = content[start : end + 1]
+    # 1. Try extracting first complete JSON object (handles multiple objects in text)
+    extracted = _extract_first_json_object(content)
+    if extracted:
+        try:
+            json.loads(extracted)
+            return extracted
+        except json.JSONDecodeError:
+            # Continue with the extracted content for further repair
+            content = extracted
+    else:
+        # No complete JSON found - try to extract and repair truncated JSON
+        start = content.find("{")
+        if start == -1:
+            return None
 
-    # 2. Try parsing as-is first
+        end = content.rfind("}")
+        if end != -1 and end > start:
+            # Has closing brace - extract that range
+            content = content[start : end + 1]
+        else:
+            # No closing brace - likely truncated, extract from start to end
+            content = content[start:]
+
+    # 2. Try parsing as-is
     try:
         json.loads(content)
         return content
