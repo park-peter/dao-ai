@@ -204,6 +204,11 @@ def create_vector_search_tool(
                 def _patched_rerank(request):
                     query = request.query
                     passages = request.passages
+
+                    # Guard against empty passages to prevent ONNX errors
+                    if not passages:
+                        return []
+
                     query_passage_pairs = [[query, p["text"]] for p in passages]
 
                     input_text = ranker.tokenizer.encode_batch(query_passage_pairs)

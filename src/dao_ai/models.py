@@ -36,6 +36,7 @@ from langchain_core.messages import (
     HumanMessage,
     SystemMessage,
 )
+from langgraph.errors import ParentCommand
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Interrupt, StateSnapshot
 from loguru import logger
@@ -1001,6 +1002,8 @@ class LanggraphResponsesAgent(ResponsesAgent):
                 response = await self.graph.ainvoke(
                     graph_input, context=context, config=custom_inputs
                 )
+        except ParentCommand:
+            raise
         except Exception as e:
             logger.error("Error in graph invocation", error=str(e))
             raise
@@ -1373,6 +1376,8 @@ class LanggraphResponsesAgent(ResponsesAgent):
                 item=self.create_text_output_item(text=output_text, id=item_id),
                 custom_outputs=custom_outputs,
             )
+        except ParentCommand:
+            raise
         except Exception as e:
             logger.error("Error in graph streaming", error=str(e))
             raise

@@ -48,6 +48,11 @@ load_dotenv(dotenv_path=".env.local", override=True)
 # Configure MLflow
 mlflow.set_registry_uri("databricks-uc")
 mlflow.set_tracking_uri("databricks")
+
+# Patch MLflow tracing to ignore ParentCommand (LangGraph control flow)
+from dao_ai.tracing import patch_mlflow_tracing_for_parent_command
+patch_mlflow_tracing_for_parent_command()
+
 mlflow.langchain.autolog()
 
 # Get config path from environment or use default

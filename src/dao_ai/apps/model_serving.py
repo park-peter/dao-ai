@@ -15,6 +15,10 @@ from dao_ai.logging import configure_logging  # noqa: E402
 mlflow.set_registry_uri("databricks-uc")
 mlflow.set_tracking_uri("databricks")
 
+# Patch MLflow tracing to ignore ParentCommand (LangGraph control flow)
+from dao_ai.tracing import patch_mlflow_tracing_for_parent_command  # noqa: E402
+patch_mlflow_tracing_for_parent_command()
+
 mlflow.langchain.autolog()
 
 model_config: ModelConfig = ModelConfig()
