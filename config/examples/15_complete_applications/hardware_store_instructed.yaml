@@ -160,34 +160,39 @@ retrievers:
         - product_id (STRING): Unique product identifier
         - sku (STRING): Stock keeping unit code
         - upc (STRING): Universal product code barcode
-        - brand_name (STRING): Brand/manufacturer (e.g., Milwaukee, DeWalt, Makita, Craftsman, Black+Decker, Ryobi, Bosch, Stanley, Husky)
-        - product_name (STRING): Product display name
-        - merchandise_class (STRING): Category (e.g., Power Tools, Hand Tools, Paint, Plumbing, Electrical, Lumber, Hardware, Outdoor)
-        - class_cd (STRING): Category code
-        - description (STRING): Full product description
+        - brand_name (STRING): Brand/manufacturer - USE THIS FOR FILTERING
+          Valid values (UPPERCASE): MILWAUKEE, DEWALT, MAKITA, CRAFTSMAN, RYOBI, BOSCH, STANLEY, HUSKY
+        - product_name (STRING): Product display name (searchable, not for filtering)
+        - merchandise_class (STRING): Internal category codes - DO NOT USE FOR FILTERING
+          (Has 400+ specific values like "CONSUMER POWER TOOLS", "HEAVY-DUTY POWER TOOLS" that won't match common terms)
+        - class_cd (STRING): Category code - DO NOT USE FOR FILTERING
+        - description (STRING): Full product description (searchable, not for filtering)
         
-        Valid filter operators for Databricks Vector Search:
-        - Equality: {"column": "value"} or {"column": ["val1", "val2"]}
-        - Comparison: {"column >": value}, {"column >=": value}, {"column <": value}, {"column <=": value}
-        - Exclusion: {"column NOT": "value"} or {"column NOT": ["val1", "val2"]}
-        - Pattern: {"column LIKE": "pattern"} (matches tokens in text)
+        IMPORTANT: Only filter on brand_name. Let semantic search handle product types.
+        
+        Valid filter operators:
+        - Equality: {"brand_name": "MILWAUKEE"} or {"brand_name": ["MILWAUKEE", "DEWALT"]}
+        - Exclusion: {"brand_name NOT": "DEWALT"}
       constraints:
-        - "Use brand_name filter for specific brand requests"
-        - "Use merchandise_class filter for category-based queries"
-        - "Product names often include model numbers and specifications"
+        - "ONLY filter on brand_name - do NOT filter on merchandise_class"
+        - "Let semantic search handle product categories like 'drills', 'saws', 'tools'"
+        - "Use brand_name for brand filtering (values must be UPPERCASE)"
+        - "Use 'brand_name NOT' to exclude brands"
+        - "Keep filters minimal - fewer filters = better recall"
       max_subqueries: 3
       rrf_k: 60
+      normalize_filter_case: uppercase
       examples:
         - query: "Milwaukee cordless drills"
-          filters: {"brand_name": "Milwaukee", "product_name LIKE": "drill"}
+          filters: {"brand_name": "MILWAUKEE"}
         - query: "DeWalt or Makita power tools"
-          filters: {"brand_name": ["DeWalt", "Makita"], "merchandise_class": "Power Tools"}
+          filters: {"brand_name": ["DEWALT", "MAKITA"]}
         - query: "paint brushes excluding Purdy brand"
-          filters: {"merchandise_class": "Paint", "product_name LIKE": "brush", "brand_name NOT": "Purdy"}
+          filters: {"brand_name NOT": "PURDY"}
         - query: "Craftsman hand tools"
-          filters: {"brand_name": "Craftsman", "merchandise_class": "Hand Tools"}
-        - query: "outdoor power equipment not battery powered"
-          filters: {"merchandise_class": "Outdoor", "description NOT": "battery"}
+          filters: {"brand_name": "CRAFTSMAN"}
+        - query: "best drill bits"
+          filters: {}
     rerank:
       model: ms-marco-MiniLM-L-12-v2
       top_n: 10

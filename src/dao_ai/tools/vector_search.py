@@ -437,9 +437,14 @@ def create_vector_search_tool(
                 sq_filters = normalize_filter_values(
                     sq_filters_dict, instructed_config.normalize_filter_case
                 )
+                # Also normalize base_filters for consistency
+                normalized_base = normalize_filter_values(
+                    base_filters, instructed_config.normalize_filter_case
+                )
                 k: int = search_parameters.num_results or 5
                 query_type: str = search_parameters.query_type or "ANN"
-                combined_filters: dict[str, Any] = {**sq_filters, **base_filters}
+                # sq_filters (from decomposition) take precedence over base_filters
+                combined_filters: dict[str, Any] = {**normalized_base, **sq_filters}
                 logger.trace(
                     "Executing search",
                     query=sq.text,
@@ -507,100 +512,36 @@ def create_vector_search_tool(
             query_type=search_parameters.query_type or "ANN",
         )
 
-    @mlflow.trace(name="apply_post_processing", span_type=SpanType.RETRIEVER)
-    def _apply_post_processing(
+    @mlflow.trace(name="apply_instruction_reranking", span_type=SpanType.RETRIEVER)
+    def _apply_instruction_reranking(
         documents: list[Document],
         query: str,
-        mode: Literal["standard", "instructed"],
-        auto_bypass: bool,
     ) -> list[Document]:
-        """Apply instruction-aware reranking and verification based on mode and bypass settings."""
-        # Skip post-processing for standard mode when auto_bypass is enabled
-        if mode == "standard" and auto_bypass:
-            mlflow.set_tag("router.bypassed_stages", "true")
+        """Apply instruction-aware reranking if configured."""
+        if not rerank_config or not rerank_config.instruction_aware:
             return documents
 
-        # Apply instruction-aware reranking if configured
-        if rerank_config and rerank_config.instruction_aware:
-            instruction_config = rerank_config.instruction_aware
-            instruction_llm = (
-                _get_cached_llm(instruction_config.model)
-                if instruction_config.model
-                else None
-            )
+        instruction_config = rerank_config.instruction_aware
+        instruction_llm = (
+            _get_cached_llm(instruction_config.model)
+            if instruction_config.model
+            else None
+        )
 
-            if instruction_llm:
-                schema_desc = (
-                    instructed_config.schema_description if instructed_config else None
-                )
-                documents = instruction_aware_rerank(
-                    llm=instruction_llm,
-                    query=query,
-                    documents=documents,
-                    instructions=instruction_config.instructions,
-                    schema_description=schema_desc,
-                    top_n=instruction_config.top_n,
-                )
+        if not instruction_llm:
+            return documents
 
-        # Apply verification if configured
-        if verifier_config:
-            verifier_llm = (
-                _get_cached_llm(verifier_config.model)
-                if verifier_config.model
-                else None
-            )
-
-            if verifier_llm:
-                schema_desc = (
-                    instructed_config.schema_description if instructed_config else ""
-                )
-                constraints = (
-                    instructed_config.constraints if instructed_config else None
-                )
-                retry_count = 0
-                verification_result: VerificationResult | None = None
-                previous_feedback: str | None = None
-
-                while retry_count <= verifier_config.max_retries:
-                    verification_result = verify_results(
-                        llm=verifier_llm,
-                        query=query,
-                        documents=documents,
-                        schema_description=schema_desc,
-                        constraints=constraints,
-                        previous_feedback=previous_feedback,
-                    )
-
-                    if verification_result.passed:
-                        mlflow.set_tag("verifier.outcome", "passed")
-                        mlflow.set_tag("verifier.retries", str(retry_count))
-                        break
-
-                    # Handle failure based on configuration
-                    if verifier_config.on_failure == "warn":
-                        mlflow.set_tag("verifier.outcome", "warned")
-                        documents = add_verification_metadata(
-                            documents, verification_result
-                        )
-                        break
-
-                    if retry_count >= verifier_config.max_retries:
-                        mlflow.set_tag("verifier.outcome", "exhausted")
-                        mlflow.set_tag("verifier.retries", str(retry_count))
-                        documents = add_verification_metadata(
-                            documents, verification_result, exhausted=True
-                        )
-                        break
-
-                    # Retry with feedback
-                    mlflow.set_tag("verifier.outcome", "retried")
-                    previous_feedback = verification_result.feedback
-                    retry_count += 1
-                    logger.debug(
-                        "Retrying search with verification feedback", retry=retry_count
-                    )
-
-        return documents
+        schema_desc = (
+            instructed_config.schema_description if instructed_config else None
+        )
+        return instruction_aware_rerank(
+            llm=instruction_llm,
+            query=query,
+            documents=documents,
+            instructions=instruction_config.instructions,
+            schema_description=schema_desc,
+            top_n=instruction_config.top_n,
+        )
 
     # Use @tool decorator for proper ToolRuntime injection
     @tool(name_or_callable=tool_name, description=tool_description)
@@ -677,19 +618,110 @@ def create_vector_search_tool(
         logger.trace("Routing mode", mode=mode, auto_bypass=auto_bypass)
         mlflow.set_tag("router.mode", mode)
 
-        # Execute search based on mode
-        if mode == "instructed" and instructed_config:
-            documents = _execute_instructed_retrieval(vs, query, base_filters)
-        else:
-            documents = _execute_standard_search(vs, query, base_filters)
+        # Verification retry loop - re-executes search with relaxed filters if needed
+        retry_count = 0
+        max_retries = verifier_config.max_retries if verifier_config else 0
+        previous_feedback: str | None = None
+        current_filters = base_filters.copy()
 
-        # Apply FlashRank reranking if configured
-        if ranker and rerank_config:
-            logger.debug("Applying FlashRank reranking")
-            documents = _rerank_documents(query, documents, ranker, rerank_config)
+        while True:
+            # Execute search based on mode
+            if mode == "instructed" and instructed_config:
+                documents = _execute_instructed_retrieval(
+                    vs, query, current_filters, previous_feedback
+                )
+            else:
+                documents = _execute_standard_search(vs, query, current_filters)
 
-        # Apply post-processing (instruction reranking + verification)
-        documents = _apply_post_processing(documents, query, mode, auto_bypass)
+            # Apply FlashRank reranking if configured
+            if ranker and rerank_config and documents:
+                logger.debug("Applying FlashRank reranking")
+                documents = _rerank_documents(query, documents, ranker, rerank_config)
+
+            # Skip post-processing for standard mode when auto_bypass is enabled
+            if mode == "standard" and auto_bypass:
+                mlflow.set_tag("router.bypassed_stages", "true")
+                break
+
+            # Apply instruction-aware reranking
+            documents = _apply_instruction_reranking(documents, query)
+
+            # Apply verification if configured
+            if not verifier_config:
+                break
+
+            verifier_llm = (
+                _get_cached_llm(verifier_config.model)
+                if verifier_config.model
+                else None
+            )
+            if not verifier_llm:
+                break
+
+            schema_desc = (
+                instructed_config.schema_description if instructed_config else ""
+            )
+            constraints = instructed_config.constraints if instructed_config else None
+
+            verification_result = verify_results(
+                llm=verifier_llm,
+                query=query,
+                documents=documents,
+                schema_description=schema_desc,
+                constraints=constraints,
+                previous_feedback=previous_feedback,
+            )
+
+            if verification_result.passed:
+                mlflow.set_tag("verifier.outcome", "passed")
+                mlflow.set_tag("verifier.retries", str(retry_count))
+                break
+
+            # Handle failure based on configuration
+            if verifier_config.on_failure == "warn":
+                mlflow.set_tag("verifier.outcome", "warned")
+                documents = add_verification_metadata(documents, verification_result)
+                break
+
+            if retry_count >= max_retries:
+                mlflow.set_tag("verifier.outcome", "exhausted")
+                mlflow.set_tag("verifier.retries", str(retry_count))
+                documents = add_verification_metadata(
+                    documents, verification_result, exhausted=True
+                )
+                break
+
+            # Retry with relaxed filters
+            mlflow.set_tag("verifier.outcome", "retrying")
+            retry_count += 1
+
+            # Build feedback for decomposition retry including filter relaxation suggestions
+            feedback_parts = []
+            if verification_result.feedback:
+                feedback_parts.append(verification_result.feedback)
+
+            # Apply suggested filter relaxation to base_filters AND build feedback
+            if verification_result.suggested_filter_relaxation:
+                removed_filters = []
+                for key, action in verification_result.suggested_filter_relaxation.items():
+                    if action == "REMOVE":
+                        removed_filters.append(key)
+                        if key in current_filters:
+                            del current_filters[key]
+                if removed_filters:
+                    feedback_parts.append(
+                        f"DO NOT include filters on these columns: {', '.join(removed_filters)}. "
+                        "Let semantic search handle these constraints instead."
+                    )
+
+            previous_feedback = " ".join(feedback_parts)
+
+            logger.debug(
+                "Retrying search with relaxed filters",
+                retry=retry_count,
+                previous_feedback=previous_feedback[:200],
+                remaining_base_filters=list(current_filters.keys()),
+            )
 
         # Serialize documents to JSON format for LLM consumption
         serialized_docs: list[dict[str, Any]] = []

@@ -87,31 +87,36 @@ retrievers:
         - product_id (BIGINT): Unique product identifier
         - sku (STRING): Stock keeping unit - internal product code
         - upc (STRING): Universal Product Code - barcode number
-        - brand_name (STRING): Brand/manufacturer (MILWAUKEE, DEWALT, MAKITA, etc.)
-        - product_name (STRING): Product display name
-        - merchandise_class (STRING): Product category (POWER TOOLS, HAND TOOLS, PAINT, etc.)
-        - class_cd (STRING): Category code
-        - description (STRING): Detailed product description
+        - brand_name (STRING): Brand/manufacturer - USE THIS FOR FILTERING
+          Valid values: MILWAUKEE, DEWALT, MAKITA, BOSCH, RYOBI, CRAFTSMAN, etc.
+        - product_name (STRING): Product display name (searchable, not for filtering)
+        - merchandise_class (STRING): Internal category codes - DO NOT USE FOR FILTERING
+          (Has 400+ specific values that won't match common terms)
+        - class_cd (STRING): Category code - DO NOT USE FOR FILTERING
+        - description (STRING): Detailed product description (searchable, not for filtering)
+
+        IMPORTANT: Only filter on brand_name. Let semantic search handle product types.
         
-        Valid filter operators for Databricks Vector Search:
-        - Equality: {"column": "value"} or {"column": ["val1", "val2"]}
-        - Exclusion: {"column NOT": "value"}
-        - Pattern: {"column LIKE": "pattern"}
+        Valid filter operators:
+        - Equality: {"brand_name": "MILWAUKEE"} or {"brand_name": ["MILWAUKEE", "DEWALT"]}
+        - Exclusion: {"brand_name NOT": "DEWALT"}
       constraints:
-        - "Use merchandise_class for category filtering"
-        - "Use brand_name for brand filtering"
-        - "Only use columns listed in schema_description"
+        - "ONLY filter on brand_name - do NOT filter on merchandise_class"
+        - "Let semantic search handle product categories like 'drills', 'saws', 'tools'"
+        - "Use brand_name for brand filtering (MILWAUKEE, DEWALT, MAKITA, etc.)"
+        - "Use 'brand_name NOT' to exclude brands"
+        - "Keep filters minimal - fewer filters = better recall"
       max_subqueries: 3
       rrf_k: 60
       examples:
         - query: "Milwaukee drills"
           filters: {"brand_name": "MILWAUKEE"}
         - query: "cordless power tools excluding DeWalt"
-          filters: {"product_name LIKE": "cordless", "brand_name NOT": "DEWALT"}
-        - query: "paint products"
-          filters: {"merchandise_class": "PAINT"}
+          filters: {"brand_name NOT": "DEWALT"}
         - query: "Milwaukee or DeWalt tools"
           filters: {"brand_name": ["MILWAUKEE", "DEWALT"]}
+        - query: "best drill bits"
+          filters: {}
     # Reranking: Databricks columns + Instruction-Aware LLM
     rerank:
       columns:                            # Databricks server-side reranking
